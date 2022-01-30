@@ -1,0 +1,80 @@
+;
+; DirectNT.inf
+;
+
+[Version]
+PnpLockdown=1
+Signature="$WINDOWS NT$"
+Class=DIRECTACCESS
+ClassGuid={78ae1a00-7fa6-11ec-a8a3-0242ac120002}
+Provider=%ManufacturerName%
+CatalogFile=DirectNT.cat
+DriverVer= 1.0
+
+[DestinationDirs]
+DefaultDestDir = 12
+DirectNT_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+DirectNT.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%DirectNT.DeviceDesc%=DirectNT_Device, Root\DirectNT ; TODO: edit hw-id
+
+[DirectNT_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+DirectNT.sys
+
+;-------------- Service installation
+[DirectNT_Device.NT.Services]
+AddService = DirectNT,%SPSVCINST_ASSOCSERVICE%, DirectNT_Service_Inst
+
+; -------------- DirectNT driver install sections
+[DirectNT_Service_Inst]
+DisplayName    = %DirectNT.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\DirectNT.sys
+
+;
+;--- DirectNT_Device Coinstaller installation ------
+;
+
+[DirectNT_Device.NT.CoInstallers]
+AddReg=DirectNT_Device_CoInstaller_AddReg
+CopyFiles=DirectNT_Device_CoInstaller_CopyFiles
+
+[DirectNT_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[DirectNT_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[DirectNT_Device.NT.Wdf]
+KmdfService =  DirectNT, DirectNT_wdfsect
+[DirectNT_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Robin K."
+ClassName="DIRECTACCESS"
+DiskName = "DirectNT Installation Disk"
+DirectNT.DeviceDesc = "DirectNT Device"
+DirectNT.SVCDESC = "DirectNT Service"

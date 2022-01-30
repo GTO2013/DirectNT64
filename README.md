@@ -1,2 +1,4 @@
-# DirectNT64
-64 Bit Port of the DirectNT Driver
+### DirectNT64
+This is a port of the DirectNT kernel driver. It was programmed in 1997 by Matthias Witthopf, Andreas Stiller from the computer magazine ct. It is used in the ADS interface for the BMW Toolset EDIABAS/INPA/NCS. The original driver was only compatible for 32 Bit machines. This repository uses the 64 Bit code from Henrik Haftmann's GiveIO to make the BMW toolset work with ADS on 64-Bit machines. I do not really have any experience in kernel driver programming, if you find something wrong, feel free to open a PR.
+
+For further details, see this post on [Bimmerforums](https://www.bimmerforums.com/forum/editpost.php?do=updatepost&postid=30379058).
